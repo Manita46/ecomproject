@@ -5,16 +5,16 @@ const express = require('express');
 const mysql = require('mysql2');
 
 const app = express();
-const PORT = 5000;
+
+const PORT = process.env.PORT || 5000;
 
 const pool = mysql.createPool({
-    host: 'localhost', 
-    user: 'root',  
-    password: '1234',
-    database: 'mydb',
-    port: '3306'
-  });
-
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT
+});
 const db = pool.promise();
 
 pool.getConnection((err) => {

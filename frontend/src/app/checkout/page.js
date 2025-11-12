@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
-import { QRCodeCanvas } from 'qrcode.react'; // ✅ Import QR Code Generator
+import { QRCodeCanvas } from 'qrcode.react'; // Import QR Code Generator
 
 export default function Checkout() {
   const { cartItems, clearCart } = useCart();
@@ -66,7 +66,7 @@ export default function Checkout() {
     console.log("🚀 Sending order data:", JSON.stringify(orderData, null, 2));
 
     try {
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),

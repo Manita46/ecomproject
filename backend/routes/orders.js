@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { prisma } = require('../utils'); // Import Prisma Client
+const { prisma } = require('../utils');
 const moment = require('moment-timezone');
 
-// ✅ เพิ่มคำสั่งซื้อใหม่
+// เพิ่มคำสั่งซื้อใหม่
 router.post('/', async (req, res) => {
     try {
-        // console.log(" Received order data:", JSON.stringify(req.body, null, 2));
 
         const { userId, customerName, phone, address, totalPrice, status, paymentMethod, orderItems, deliveryMethod } = req.body;
         console.log(userId, customerName, phone, address, totalPrice, status, paymentMethod, orderItems, deliveryMethod);
@@ -23,7 +22,7 @@ router.post('/', async (req, res) => {
 
         const newOrder = await prisma.order.create({
             data: {
-                user: { connect: { id: Number(userId) } },  // เชื่อมต่อกับ user โดยใช้ `connect`
+                user: { connect: { id: Number(userId) } },
                 customerName: customerName || "Guest",
                 phone: phone || "N/A",
                 address: address || "N/A",
@@ -43,16 +42,11 @@ router.post('/', async (req, res) => {
             include: { orderitem: { include: { product: true } } },
         });
 
-
         res.status(201).json(newOrder);
-    } catch (error) {
-        console.error("❌ Error creating order:", error.message);
-        console.error(error); 
-        res.status(500).json({ error: error.message });
-    }
+    } catch (error) { console.error("❌ Error creating order:", error.message); console.error(error); res.status(500).json({ error: error.message }); }
 });
 
-// ✅ ดึงข้อมูลคำสั่งซื้อทั้งหมด
+// ดึงข้อมูลคำสั่งซื้อทั้งหมด
 router.get('/', async (req, res) => {
     try {
         const { isAdmin, userId } = req.query;
@@ -83,7 +77,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// ✅ ดึงข้อมูลคำสั่งซื้อตาม `id`
+// ดึงข้อมูลคำสั่งซื้อตาม `id`
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -103,7 +97,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// ✅ อัปเดตสถานะคำสั่งซื้อ
+// อัปเดตสถานะคำสั่งซื้อ
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -118,7 +112,7 @@ router.put('/:id', async (req, res) => {
 
         const updatedStatus = status.toUpperCase();
         console.log(updatedStatus);
-        
+
         const updatedOrder = await prisma.order.update({
             where: { id: Number(id) },
             data: { status: updatedStatus }
@@ -131,7 +125,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ✅ ลบคำสั่งซื้อตาม `id`
+// ลบคำสั่งซื้อตาม `id`
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;

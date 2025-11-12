@@ -16,7 +16,7 @@ export default function Orders() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/orders?isAdmin=true', { cache: 'no-store' });
+      const res = await fetch('/api/orders?isAdmin=true', { cache: 'no-store' });
       const data = await res.json();
       setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -33,7 +33,7 @@ export default function Orders() {
     setSavingId(orderId);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
+      const res = await fetch(`/api/orders/${orderId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),

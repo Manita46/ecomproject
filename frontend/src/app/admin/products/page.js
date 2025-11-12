@@ -14,7 +14,7 @@ export default function Products() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/products');
+      const response = await fetch('/api/products');
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -25,8 +25,8 @@ export default function Products() {
   const handleSaveProduct = async () => {
     const method = editingProduct ? "PUT" : "POST";
     const url = editingProduct
-      ? `http://localhost:5000/api/products/${editingProduct.id}`
-      : "http://localhost:5000/api/products";
+      ? `/api/products/${editingProduct.id}`
+      : `/api/products`;
 
       const payload = {
         name: productData.name?.trim() ?? "",
@@ -64,7 +64,7 @@ export default function Products() {
     if (!confirm("Are you sure you want to delete this product?")) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const response = await fetch(`/api/products/${id}`, {
         method: "DELETE",
       });
 

@@ -4,7 +4,7 @@ const { prisma } = require('../utils');
 
 const { DateTime } = require('luxon');
 
-// ✅ เพิ่มรีวิวใหม่
+// เพิ่มรีวิวใหม่
 router.post('/', async (req, res) => {
     try {
         const { name, message } = req.body;
@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
     try {
         const reviews = await prisma.review.findMany();
 
-        // ✅ แปลง createdAt เป็นเวลาไทย
+        // แปลง createdAt เป็นเวลาไทย
         const formattedReviews = reviews.map(review => ({
             ...review,
             createdAt: DateTime.fromISO(review.createdAt.toISOString())

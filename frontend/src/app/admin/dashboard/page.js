@@ -7,13 +7,13 @@ export default function Dashboard() {
   const [totalOrders, setTotalOrders] = useState(0);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products')
+    fetch('/api/dashboard')
       .then(res => res.json())
-      .then(data => setTotalProducts(data.length));
-
-    fetch('http://localhost:5000/api/orders?isAdmin=true')
-      .then(res => res.json())
-      .then(data => setTotalOrders(data.length));
+      .then(data => {
+        setTotalProducts(data.totalProducts);
+        setTotalOrders(data.totalOrders);
+      })
+      .catch(err => console.error("Error loading dashboard data:", err));
   }, []);
 
   return (
