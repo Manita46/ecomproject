@@ -71,7 +71,8 @@ export default function Checkout() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
-
+      console.log(response);
+      
       if (response.ok) {
         console.log("✅ Order placed successfully!");
         clearCart();

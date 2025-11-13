@@ -25,24 +25,43 @@ enum DeliveryMethod {
   DELIVERY
 }
 
-model order {
-  id            Int          @id @default(autoincrement())
-  customerName  String?
-  totalPrice    Float
-  status        order_status @default(PENDING)
-  createdAt     DateTime     @default(now())
-  address       String       @default("N/A")
-  phone         String       @default("N/A")
-  paymentMethod String       @default("cash")
-  deliveryMethod DeliveryMethod?
-  userId        Int?
-  // messageId      String?   //CPTMS
-  // jobNo          String?   //CPTMS
-  // orderNo        String?   //CPTMS
-  // shipmentNo     String?
+model job_message {
+  id        Int      @id @default(autoincrement())
+  jobId     Int 
+  messageId String 
+  createdAt DateTime @default(now())
 
-  orderitem     orderitem[]
-  user          user?        @relation(fields: [userId], references: [id], map: "Order_userId_fkey")
+  job job @relation(fields: [jobId], references: [id])
+
+  @@index([jobId])
+}
+
+model job {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  createdAt DateTime @default(now())
+
+  order       order?        @relation(fields: [orderId], references: [id])
+  jobMessages job_message[]
+
+  @@index([orderId])
+}
+
+model order {
+  id             Int             @id @default(autoincrement())
+  customerName   String?
+  totalPrice     Float
+  status         order_status    @default(PENDING)
+  createdAt      DateTime        @default(now())
+  address        String          @default("N/A")
+  phone          String          @default("N/A")
+  paymentMethod  String          @default("cash")
+  deliveryMethod DeliveryMethod?
+  userId         Int?
+
+  orderitem orderitem[]
+  job       job[]
+  user      user?       @relation(fields: [userId], references: [id], map: "Order_userId_fkey")
 
   @@index([userId], map: "Order_userId_fkey")
 }
@@ -86,7 +105,7 @@ model user {
   email     String   @unique(map: "User_email_key")
   password  String
   createdAt DateTime @default(now())
-  role      Role   @default(USER)
+  role      Role     @default(USER)
   order     order[]
 }
 

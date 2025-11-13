@@ -18,7 +18,7 @@ export async function POST(req) {
   } catch (err) {
     console.error("❌ Error in /api/checkout route:", err);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Internal Server Error123" },
       { status: 500 }
     );
   }
