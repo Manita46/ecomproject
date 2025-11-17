@@ -63,7 +63,7 @@ export default function Checkout() {
       }))
     };
 
-    console.log("🚀 Sending order data:", JSON.stringify(orderData, null, 2));
+    // console.log("🚀 Sending order data:", JSON.stringify(orderData, null, 2));
 
     try {
       const response = await fetch('/api/checkout', {
@@ -71,10 +71,10 @@ export default function Checkout() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
-      console.log(response);
+      // console.log(response);
       
       if (response.ok) {
-        console.log("✅ Order placed successfully!");
+        // console.log("✅ Order placed successfully!");
         clearCart();
         localStorage.removeItem('cartItems');
         router.push('/order-success');

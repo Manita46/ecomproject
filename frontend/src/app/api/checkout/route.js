@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
+const BACKEND = process.env.BACKEND_URL 
 
 //POST /api/checkout → ส่งข้อมูลออเดอร์ไป backend
 export async function POST(req) {
@@ -13,7 +13,22 @@ export async function POST(req) {
       body: JSON.stringify(orderData),
     });
 
+    
     const data = await res.json().catch(() => ({}));
+
+    console.log("orderData :",orderData)
+    console.log("Data :",data)
+    const jobres = await fetch(`${BACKEND}/api/job`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    console.log("jobres",jobres)
+  
+
+
+
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
     console.error("❌ Error in /api/checkout route:", err);

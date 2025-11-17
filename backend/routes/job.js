@@ -6,14 +6,15 @@ const moment = require('moment-timezone');
 
 router.post('/', async (req, res) => {
   try {
-    const { orderId, requestedVehicleType } = req.body;
-
-    // 1) เช็คว่ามี orderId มั้ย
+    // const orderId  = req.body.id;
+    const orderId = req.body.id
+    //orderId check
     if (!orderId) {
+      console.log("orderId: ", orderId)
       return res.status(400).json({ error: "orderId is required" });
     }
 
-    // 2) ดึง order จาก DB
+    //ดึง order จาก DB
     const order = await prisma.order.findUnique({
       where: { id: Number(orderId) },
       include: { orderitem: { include: { product: true } } },
@@ -23,10 +24,11 @@ router.post('/', async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    // 3) สร้าง job ใหม่ ผูกกับ order นี้
+    //
     const job = await prisma.job.create({
       data: {
         orderId: order.id,
+        messageId: "null",
       },
     });
 
@@ -112,7 +114,7 @@ router.post('/', async (req, res) => {
           "trailerProvinicialSign": "",
           "paidByVehicleType": "",
           "reason": "",
-          "vendorSAPCode": "banksub01",
+          "vendorSAPCode": "",
           "deliveryPaymentType": "Postpaid",
           "deliveryPaymentChannel": "TrueMoney",
           "itemCategory": "Product",
@@ -122,6 +124,8 @@ router.post('/', async (req, res) => {
         }
       ]
     };
+    console.log(payload);
+    
 
     const resp = await fetch(`${process.env.OMS_URL}/orders-bulk-direct-schedule`, {
       method: "POST",

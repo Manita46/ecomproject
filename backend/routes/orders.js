@@ -5,6 +5,11 @@ const moment = require('moment-timezone');
 
 // เพิ่มคำสั่งซื้อใหม่
 router.post('/', async (req, res) => {
+    // console.log("start orderlog");
+    // console.log(req.body);
+    // console.log("end orderlog");
+    
+    
     try {
 
         const { userId, customerName, phone, address, totalPrice, status, paymentMethod, orderItems, deliveryMethod } = req.body;

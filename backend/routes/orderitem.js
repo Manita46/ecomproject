@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { prisma } = require('../utils');
 
-// ✅ เพิ่มสินค้าเข้าไปในออเดอร์
+// เพิ่มสินค้าเข้าไปในออเดอร์
 router.post('/', async (req, res) => {
     try {
         const { orderId, productId, quantity, price, userid } = req.body;
@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// ✅ ดึงข้อมูล OrderItem ทั้งหมด
+// ดึงข้อมูล OrderItem ทั้งหมด
 router.get('/', async (req, res) => {
     try {
         const orderItems = await prisma.orderItem.findMany({
@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// ✅ ดึงข้อมูล OrderItem ตาม `id`
+//ดึงข้อมูล OrderItem ตาม `id`
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -56,7 +56,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// ✅ อัปเดตจำนวนสินค้าใน OrderItem
+//อัปเดตจำนวนสินค้าใน OrderItem
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -76,7 +76,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ✅ ลบ OrderItem ตาม `id`
+//ลบ OrderItem ตาม `id`
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
