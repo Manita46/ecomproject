@@ -7,10 +7,9 @@ const moment = require('moment-timezone');
 router.post('/', async (req, res) => {
   try {
     // const orderId  = req.body.id;
-    const orderId = req.body.id
+    const { orderId } = req.body || null
     //orderId check
     if (!orderId) {
-      console.log("orderId: ", orderId)
       return res.status(400).json({ error: "orderId is required" });
     }
 
@@ -28,7 +27,7 @@ router.post('/', async (req, res) => {
     const job = await prisma.job.create({
       data: {
         orderId: order.id,
-        messageId: "null",
+        // messageId: "null",
       },
     });
 
@@ -149,9 +148,11 @@ router.post('/', async (req, res) => {
     const messageId = data?.messageId || null;
 
     if (messageId) {
-      await prisma.job.update({
-        where: { id: order.id },
-        data: { messageId },
+      await prisma.job_message.create({
+        // where: { id: order.id },
+        data: { 
+          jobId: job.id,
+          messageId: String(messageId), },
       });
     }
 

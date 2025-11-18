@@ -15,13 +15,20 @@ export async function POST(req) {
 
     
     const data = await res.json().catch(() => ({}));
+    
+    if (!res.ok) {
+      return NextResponse.json(data, { status: res.status });
+    }
+
+    const orderId = data.id;
+    console.log("orderId ที่จะส่งไป /api/job :", orderId);
 
     console.log("orderData :",orderData)
     console.log("Data :",data)
     const jobres = await fetch(`${BACKEND}/api/job`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ orderId }),
     });
 
     console.log("jobres",jobres)

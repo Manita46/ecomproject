@@ -59,6 +59,10 @@ model order {
   deliveryMethod DeliveryMethod?
   userId         Int?
 
+  jobNo      String? 
+  orderNo    String? 
+  shipmentNo String?
+
   orderitem orderitem[]
   job       job[]
   user      user?       @relation(fields: [userId], references: [id], map: "Order_userId_fkey")

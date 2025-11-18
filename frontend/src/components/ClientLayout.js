@@ -10,7 +10,7 @@ export default function ClientLayout({ children }) {
   const router = useRouter();
 
   useEffect(() => {
-    // ✅ ตรวจสอบ Token และโหลดข้อมูล User
+    // ตรวจสอบ Token และโหลดข้อมูล User
     const storedUser = localStorage.getItem("user");
     if (storedUser && storedUser !== "undefined" && storedUser !== "null") {
         try {
