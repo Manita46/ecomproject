@@ -27,8 +27,8 @@ enum DeliveryMethod {
 
 model job_message {
   id        Int      @id @default(autoincrement())
-  jobId     Int 
-  messageId String 
+  jobId     Int
+  messageId String
   createdAt DateTime @default(now())
 
   job job @relation(fields: [jobId], references: [id])
@@ -40,12 +40,31 @@ model job {
   id        Int      @id @default(autoincrement())
   orderId   Int
   createdAt DateTime @default(now())
+  jobCode   String?
+
+  jobNo String?
 
   order       order?        @relation(fields: [orderId], references: [id])
   jobMessages job_message[]
+  jobDetail   job_detail[]
 
   @@index([orderId])
 }
+
+model job_detail {
+  id                     Int      @id @default(autoincrement())
+  jobId                  Int?
+  orderNo                String?
+  upstreamTrackingNumber String?
+  shipmentNo             String?
+  createdAt              DateTime @default(now())
+
+  job job? @relation(fields: [jobId], references: [id])
+
+  @@index([jobId])
+}
+
+//ทำฟังก์ชันเป๋นเลขจ๊อบ เป็นdoนำหน้า > ปี/เดือน/วัน ทำ autoincrement 3 running number 
 
 model order {
   id             Int             @id @default(autoincrement())
@@ -58,10 +77,6 @@ model order {
   paymentMethod  String          @default("cash")
   deliveryMethod DeliveryMethod?
   userId         Int?
-
-  jobNo      String? 
-  orderNo    String? 
-  shipmentNo String?
 
   orderitem orderitem[]
   job       job[]

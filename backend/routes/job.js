@@ -1,8 +1,79 @@
 const express = require('express');
 const router = express.Router();
 const { prisma } = require('../utils');
+const { generateJobCode } = require('../createJobCode');
 const moment = require('moment-timezone');
 
+async function saveStatus(body) {
+  console.log("📥 saveStatus:", JSON.stringify(body, null, 2));
+  console.log("bodySave Status", body)
+  const { messageId, items } = body;
+  if (!messageId || !items) {
+    throw new Error("messageId and items are required");
+  }
+
+  // หา messageId ในตาราง job_message
+  const jm = await prisma.job_message.findFirst({
+    where: { messageId: String(messageId) },
+    include: { job: true },
+  });
+
+  if (!jm || !jm.job) {
+    throw new Error("job/message not found for this messageId");
+  }
+
+  const job = jm.job;
+
+  // ----- ดึงค่าจาก items -----
+  const jobNo =
+    Array.isArray(items.jobNoSuccess) && items.jobNoSuccess.length > 0
+      ? items.jobNoSuccess[0]
+      : null;
+
+  const firstOrder =
+    Array.isArray(items.orderNoSuccess) && items.orderNoSuccess.length > 0
+      ? items.orderNoSuccess[0]
+      : null;
+
+  const orderNo = firstOrder?.orderNo || null;
+  const upstreamTrackingNumber = firstOrder?.upstreamTrackingNumber || null;
+
+  const firstShipment =
+    Array.isArray(items.shipmentNoSuccess) && items.shipmentNoSuccess.length > 0
+      ? items.shipmentNoSuccess[0]
+      : null;
+
+  const shipmentNo = firstShipment?.shipmentNo || null;
+
+  // อัปเดต jobNo ใน table job
+  if (jobNo) {
+    await prisma.job.update({
+      where: { id: job.id },
+      data: { jobNo },
+    });
+  }
+
+  await prisma.job_detail.create({
+    data: {
+      jobId: job.id,
+      orderNo,
+      shipmentNo,
+      upstreamTrackingNumber,
+    },
+  });
+
+  return {
+    ok: true,
+    jobId: job.id,
+    messageId,
+    savedJobNo: jobNo,
+    savedJobDetail: {
+      orderNo,
+      upstreamTrackingNumber,
+      shipmentNo,
+    },
+  };
+}
 
 router.post('/', async (req, res) => {
   try {
@@ -23,12 +94,13 @@ router.post('/', async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    //
+    const jobCode = await generateJobCode();
+
     const job = await prisma.job.create({
       data: {
         orderId: order.id,
-        // messageId: "null",
-      },
+        jobCode: jobCode,
+      }
     });
 
     const payload = {
@@ -90,7 +162,7 @@ router.post('/', async (req, res) => {
           "numberOfReceipts": "3",
           "routeCode": "",
           "customerLineCode": "",
-          "presetLine": String(job.id), //เอาjob id from job table
+          "presetLine": job.jobCode, //เอาjob id from job table
           "destinationType": "Route",
           "billingNoteInvoice": "Billing Note/Invoice 1",
           "remark": "Remark 1",
@@ -123,7 +195,7 @@ router.post('/', async (req, res) => {
         }
       ]
     };
-    console.log(payload);
+
     
 
     const resp = await fetch(`${process.env.OMS_URL}/orders-bulk-direct-schedule`, {
@@ -156,16 +228,29 @@ router.post('/', async (req, res) => {
       });
     }
 
-    return res.json({
+    return res.status(200).json({
       ok: true,
       orderId: order.id,
       jobId: job.id,
       messageId,
       cptmsResponse: data,
     });
+    
   } catch (error) {
     console.error("❌ create job error:", error);
     return res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/create-order-status-update', async (req, res) => {
+  try {
+    console.log("🔥🔥🔥 [CALLBACK HIT] raw body:", JSON.stringify(req.body, null, 2));
+    const result = await saveStatus(req.body);
+    console.log("✅ saveStatus result:", result);
+    return res.json(result);
+  } catch (err) {
+    console.error("❌ Error in callback:", err);
+    return res.status(500).json({ error: err.message });
   }
 });
 

@@ -43,7 +43,7 @@ const orderitemRoutes = require('./routes/orderitem');
 const reviewRoutes = require('./routes/reviews');
 const authRoutes = require('./routes/auth');
 const jobRoutes = require('./routes/job');
-const callbackRoutes = require('./routes/callback')
+// const callbackRoutes = require('./routes/callback')
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -51,7 +51,7 @@ app.use('/api/orderitem',orderitemRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/job', jobRoutes);   
-app.use('/api/callback', callbackRoutes)
+// app.use('/api/callback', callbackRoutes)
 
 // Start server
 app.listen(PORT, () => {

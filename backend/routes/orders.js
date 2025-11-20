@@ -46,7 +46,6 @@ router.post('/', async (req, res) => {
             },
             include: { orderitem: { include: { product: true } } },
         });
-        console.log(newOrder);
         
         res.status(201).json(newOrder);
         

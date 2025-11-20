@@ -21,18 +21,28 @@ export async function POST(req) {
     }
 
     const orderId = data.id;
-    console.log("orderId ที่จะส่งไป /api/job :", orderId);
+    // console.log("orderId ที่จะส่งไป /api/job :", orderId);
 
-    console.log("orderData :",orderData)
-    console.log("Data :",data)
+    // console.log("orderData :",orderData)
+    // console.log("Data :",data)
     const jobres = await fetch(`${BACKEND}/api/job`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ orderId }),
     });
+    const datajob = await jobres.json().catch(() => ({}));
+    console.log("datajob",datajob)
 
-    console.log("jobres",jobres)
-  
+
+    // const asdasdasdasfksfjadf = {
+    //   asd: datajob.orderId,
+    //   asdddd: "adasdasd"
+    // }
+    // const asdasdasdasd = await fetch(`${BACKEND}/api/job/create-order-status-update`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(),
+    // });
 
 
 
