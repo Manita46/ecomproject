@@ -108,7 +108,7 @@ router.post('/', async (req, res) => {
         {
           "businessUnit": "BB",
           "customerSAPCode": "bankcustomer01",
-          "upstreamTrackingNumber": "ทดสอบ pt",
+          "upstreamTrackingNumber": job.jobCode,
           "sequence": "",
           "groupOrder": "",
           "surchargeDiscount": "Service for Shipper",
